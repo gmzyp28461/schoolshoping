@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改商品')" />
+    <th:block th:include="include :: summernote-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-goods-edit" th:object="${mineGoods}" enctype="multipart/form-data">
+            <input name="uuid" th:field="*{uuid}" type="hidden">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label ">类型：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input name="typeId" th:field="*{typeId}" type="hidden" id="treeId"/>
+                                <input name="typeName" th:field="*{type.typeName}" onclick="selectTypeTree()" id="treeName" type="text" required readonly placeholder="请选择商品类型" class="form-control">
+                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label ">状态：</label>
+                        <div class="col-sm-8">
+                            <select name="state" class="form-control m-b" th:with="type=${@dict.getType('goods_state')}">
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{state}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label ">名称：</label>
+                        <div class="col-sm-8">
+                            <input name="title" class="form-control" th:field="*{title}"  type="text" required >
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label ">封面：</label>
+                        <div class="col-sm-8">
+                            <input name="photoFile" type="file" class="form-control" ></input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label ">原价：</label>
+                        <div class="col-sm-8">
+                            <input name="costPrice" class="form-control" th:field="*{costPrice}" type="text"   required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label ">现价：</label>
+                        <div class="col-sm-8">
+                            <input name="price" class="form-control" type="text" th:field="*{price}"   required >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label ">库存：</label>
+                        <div class="col-sm-8">
+                            <input name="stock" class="form-control" type="text" th:field="*{stock}"   required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">首页推荐</label>
+                        <div class="col-sm-8">
+                          <div class="radio-box" th:each="dict : ${@dict.getType('shop_index_status')}">
+                                <input type="radio" th:id="${dict.dictCode}" name="indexStatus" th:value="${dict.dictValue}" th:field="*{indexStatus}">
+                                <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label "></label>
+                        <div class="col-sm-8">
+                                <img th:src="${mineGoods.url}" height="100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">内容详细：</label>
+                        <div class="col-xs-10">
+                            <input type="hidden" class="form-control" name="content" th:field="*{content}">
+                            <div class="summernote" id="content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: summernote-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "shop/goods";
+        $("#form-goods-edit").validate({ onkeyup: false,
+            rules:{
+                costPrice:{
+                    number:true
+                },
+                price:{
+                    number:true
+                },
+                stock:{
+                    digits:true
+                }
+            },
+            messages: {
+
+            },
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                var formData = new FormData($("#form-goods-edit")[0]);
+                $.ajax({
+                    url:  prefix + "/edit",
+                    data: formData,
+                    type: "post",
+                    processData: false,
+                    contentType: false,
+                    success: function(result) {
+                        $.operate.successCallback(result);
+                    },
+                    error : function(request) {
+                        $.modal.alertError("系统错误");
+                    }
+                });
+            }
+        }
+
+        $(function() {
+            $('.summernote').each(function(i) {
+                $('#' + this.id).summernote({
+                    lang: 'zh-CN',
+                    height:200,
+                    dialogsInBody: true,
+                    callbacks: {
+                        onChange: function(contents, $edittable) {
+                            $("input[name='" + this.id + "']").val(contents);
+                        },
+                        onImageUpload: function(files) {
+                            var obj = this;
+                            var data = new FormData();
+                            data.append("file", files[0]);
+                            $.ajax({
+                                type: "post",
+                                url: ctx + "common/upload",
+                                data: data,
+                                cache: false,
+                                contentType: false,
+                                processData: false,
+                                dataType: 'json',
+                                success: function(result) {
+                                    if (result.code == web_status.SUCCESS) {
+                                        $('#' + obj.id).summernote('insertImage', result.fileName);
+                                    } else {
+                                        $.modal.alertError(result.msg);
+                                    }
+                                },
+                                error: function(error) {
+                                    $.modal.alertWarning("图片上传失败。");
+                                }
+                            });
+                        }
+                    }
+                });
+                var content = $("input[name='" + this.id + "']").val();
+                $('#' + this.id).summernote('code', content);
+            })
+        });
+
+        function selectTypeTree() {
+            var options = {
+                title: '类型选择',
+                width: "380",
+                url: ctx + "shop/type/selectTypeTree/0",
+                callBack: doSubmit
+            };
+            $.modal.openOptions(options);
+        }
+
+        function doSubmit(index, layero){
+            var tree = layero.find("iframe")[0].contentWindow.$._tree;
+            if ($.tree.notAllowParents(tree)) {
+                var body = $.modal.getChildFrame(index);
+                $("#treeId").val(body.find('#treeId').val());
+                $("#treeName").val(body.find('#treeName').val());
+                $.modal.close(index);
+            }
+        }
+    </script>
+</body>
+</html>

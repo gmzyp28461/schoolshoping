@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改轮播图')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-banner-edit" th:object="${mineBanner}"  enctype="multipart/form-data">
+            <input name="uuid" th:field="*{uuid}" type="hidden">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">标题：</label>
+                <div class="col-sm-8">
+                    <input name="title" th:field="*{title}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">图片：</label>
+                <div class="col-sm-8">
+                    <input name="photoFile" type="file" class="form-control"></input>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-8">
+                    <img th:src="${mineBanner.url}" height="100">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">关联商品：</label>
+                <div class="col-sm-8">
+                    <select name="goodsId" class="form-control m-b" >
+                        <option th:each="good : ${list}" th:text="${good.title}" th:value="${good.uuid}" th:field="*{goodsId}" ></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <textarea name="remark" class="form-control">[[*{remark}]]</textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "shop/banner";
+        $("#form-banner-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                var formData = new FormData($("#form-banner-edit")[0]);
+                $.ajax({
+                    url: prefix + "/edit",
+                    data: formData,
+                    type: "post",
+                    processData: false,
+                    contentType: false,
+                    success: function(result) {
+                        $.operate.successCallback(result);
+                    }
+                });
+
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoping.project.shop.mapper.MineBalanceMapper">
+
+    <resultMap type="MineBalance" id="MineBalanceResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="price"    column="price"    />
+        <result property="userId"    column="user_id"    />
+        <result property="status"    column="status"    />
+        <result property="idCard"    column="id_card"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <association property="user"     column="user_id" javaType="User" resultMap="UserResult" />
+    </resultMap>
+
+    <resultMap type="User" id="UserResult">
+        <id     property="userId"        column="user_id"         />
+        <result property="userName"      column="user_name"       />
+        <result property="inviteCode"        column="invite_code"          />
+    </resultMap>
+
+    <sql id="selectMineBalanceVo">
+        select a.uuid, a.price, a.user_id, a.status, a.id_card, a.del_flag, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,
+         u.avatar,u.user_name,u.invite_code
+        from mine_balance a
+	    LEFT JOIN sys_user u on u.user_id = a.user_id
+    </sql>
+
+    <select id="selectMineBalanceList" parameterType="MineBalance" resultMap="MineBalanceResult">
+        <include refid="selectMineBalanceVo"/>
+        <where>
+            <if test="userId != null and userId!=0"> and a.user_id = #{userId}</if>
+            <if test="status != null  and status != ''"> and a.status = #{status}</if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+    <select id="selectMineBalanceByUuid" parameterType="Long" resultMap="MineBalanceResult">
+        <include refid="selectMineBalanceVo"/>
+        where a.uuid = #{uuid}
+    </select>
+
+    <insert id="insertMineBalance" parameterType="MineBalance">
+        insert into mine_balance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">uuid,</if>
+            <if test="price != null">price,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="status != null">status,</if>
+            <if test="idCard != null">id_card,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">#{uuid},</if>
+            <if test="price != null">#{price},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="idCard != null">#{idCard},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMineBalance" parameterType="MineBalance">
+        update mine_balance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="price != null">price = #{price},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteMineBalanceByUuid" parameterType="Long">
+        delete from mine_balance where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteMineBalanceByUuids" parameterType="String">
+        delete from mine_balance where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+
+</mapper>

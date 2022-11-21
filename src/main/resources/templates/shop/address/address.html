@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('订单地址列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>订单id：</label>
+                                <input type="text" name="orderId"/>
+                            </li>
+                            <li>
+                                <label>用户id：</label>
+                                <input type="text" name="userId"/>
+                            </li>
+                            <li>
+                                <label>名称：</label>
+                                <input type="text" name="userName"/>
+                            </li>
+                            <li>
+                                <label>邮编：</label>
+                                <input type="text" name="postalCode"/>
+                            </li>
+                            <li>
+                                <label>国标收货地址第一级地址：</label>
+                                <input type="text" name="provinceName"/>
+                            </li>
+                            <li>
+                                <label>国标收货地址第二级地址：</label>
+                                <input type="text" name="cityName"/>
+                            </li>
+                            <li>
+                                <label>国标收货地址第三级地址：</label>
+                                <input type="text" name="countyName"/>
+                            </li>
+                            <li>
+                                <label>详细收货地址信息：</label>
+                                <input type="text" name="detailInfo"/>
+                            </li>
+                            <li>
+                                <label>收货地址国家码：</label>
+                                <input type="text" name="nationalCode"/>
+                            </li>
+                            <li>
+                                <label>收货人手机号码：</label>
+                                <input type="text" name="telNumber"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="shop:address:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="shop:address:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="shop:address:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="shop:address:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('shop:address:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('shop:address:remove')}]];
+        var prefix = ctx + "shop/address";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "订单地址",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'uuid',
+                    title: '主键',
+                    visible: false
+                },
+                {
+                    field: 'orderId',
+                    title: '订单id'
+                },
+                {
+                    field: 'userId',
+                    title: '用户id'
+                },
+                {
+                    field: 'userName',
+                    title: '名称'
+                },
+                {
+                    field: 'postalCode',
+                    title: '邮编'
+                },
+                {
+                    field: 'provinceName',
+                    title: '国标收货地址第一级地址'
+                },
+                {
+                    field: 'cityName',
+                    title: '国标收货地址第二级地址'
+                },
+                {
+                    field: 'countyName',
+                    title: '国标收货地址第三级地址'
+                },
+                {
+                    field: 'detailInfo',
+                    title: '详细收货地址信息'
+                },
+                {
+                    field: 'nationalCode',
+                    title: '收货地址国家码'
+                },
+                {
+                    field: 'telNumber',
+                    title: '收货人手机号码'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.uuid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.uuid + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

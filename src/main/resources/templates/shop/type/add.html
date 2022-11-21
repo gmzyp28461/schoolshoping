@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增分类')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-type-add" enctype="multipart/form-data">
+            <input id="treeId" name="parentId" type="hidden"  th:value="${type.typeId}"  />
+            <div class="form-group">
+                <label class="col-sm-3 control-label">父级：</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <input class="form-control" type="text" onclick="selectTypeTree()" id="treeName" readonly="true" th:value="${type.typeName}">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">名称：</label>
+                <div class="col-sm-8">
+                    <input name="typeName" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">显示顺序：</label>
+                <div class="col-sm-8">
+                    <input name="orderNum" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">封面：</label>
+                <div class="col-sm-8">
+                    <input name="photoFile" type="file" class="form-control" >
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">首页推荐：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('shop_index_status')}">
+                        <input type="radio" th:id="${dict.dictCode}" name="indexStatus" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">状态：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('sys_normal_disable')}">
+                        <input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <textarea name="remark" class="form-control"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "shop/type"
+        $("#form-type-add").validate({
+            onkeyup: false,
+            rules:{
+                typeName:{
+                    remote: {
+                        url: prefix + "/checkTypeNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "parentId": function() {
+                                return $("input[name='parentId']").val();
+                            },
+                            "typeName" : function() {
+                                return $.common.trim($("#typeName").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },
+                orderNum:{
+                    digits:true
+                }
+            },
+            messages: {
+                "typeName": {
+                    remote: "类型已经存在"
+                }
+            },
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                var formData = new FormData($("#form-type-add")[0]);
+                $.ajax({
+                    url:  prefix + "/add",
+                    data: formData,
+                    type: "post",
+                    processData: false,
+                    contentType: false,
+                    success: function(result) {
+                        $.operate.successCallback(result);
+                    },
+                    error : function(request) {
+                        $.modal.alertError("系统错误");
+                    }
+                });
+            }
+        }
+        function selectTypeTree() {
+            var options = {
+                title: '类型选择',
+                width: "380",
+                url: prefix + "/selectTypeTree/" + $("#treeId").val(),
+                callBack: doSubmit
+            };
+            $.modal.openOptions(options);
+        }
+
+        function doSubmit(index, layero){
+            var body = $.modal.getChildFrame(index);
+            $("#treeId").val(body.find('#treeId').val());
+            $("#treeName").val(body.find('#treeName').val());
+            $.modal.close(index);
+        }
+    </script>
+</body>
+</html>

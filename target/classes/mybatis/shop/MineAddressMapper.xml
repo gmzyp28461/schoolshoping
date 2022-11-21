@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoping.project.shop.mapper.MineAddressMapper">
+
+    <resultMap type="MineAddress" id="MineAddressResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="postalCode"    column="postal_code"    />
+        <result property="provinceName"    column="province_name"    />
+        <result property="cityName"    column="city_name"    />
+        <result property="countyName"    column="county_name"    />
+        <result property="detailInfo"    column="detail_info"    />
+        <result property="nationalCode"    column="national_code"    />
+        <result property="telNumber"    column="tel_number"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectMineAddressVo">
+        select uuid, order_id, user_id, user_name, postal_code, province_name, city_name, county_name, detail_info, national_code, tel_number, create_by, create_time from mine_address
+    </sql>
+
+    <select id="selectMineAddressList" parameterType="MineAddress" resultMap="MineAddressResult">
+        <include refid="selectMineAddressVo"/>
+        <where>
+            <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="postalCode != null  and postalCode != ''"> and postal_code = #{postalCode}</if>
+            <if test="provinceName != null  and provinceName != ''"> and province_name like concat('%', #{provinceName}, '%')</if>
+            <if test="cityName != null  and cityName != ''"> and city_name like concat('%', #{cityName}, '%')</if>
+            <if test="countyName != null  and countyName != ''"> and county_name like concat('%', #{countyName}, '%')</if>
+            <if test="detailInfo != null  and detailInfo != ''"> and detail_info = #{detailInfo}</if>
+            <if test="nationalCode != null  and nationalCode != ''"> and national_code = #{nationalCode}</if>
+            <if test="telNumber != null "> and tel_number = #{telNumber}</if>
+        </where>
+    </select>
+
+    <select id="selectMineAddressByUuid" parameterType="Long" resultMap="MineAddressResult">
+        <include refid="selectMineAddressVo"/>
+        where uuid = #{uuid}
+    </select>
+
+    <insert id="insertMineAddress" parameterType="MineAddress" useGeneratedKeys="true" keyProperty="uuid">
+        insert into mine_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="postalCode != null">postal_code,</if>
+            <if test="provinceName != null">province_name,</if>
+            <if test="cityName != null">city_name,</if>
+            <if test="countyName != null">county_name,</if>
+            <if test="detailInfo != null">detail_info,</if>
+            <if test="nationalCode != null">national_code,</if>
+            <if test="telNumber != null">tel_number,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="postalCode != null">#{postalCode},</if>
+            <if test="provinceName != null">#{provinceName},</if>
+            <if test="cityName != null">#{cityName},</if>
+            <if test="countyName != null">#{countyName},</if>
+            <if test="detailInfo != null">#{detailInfo},</if>
+            <if test="nationalCode != null">#{nationalCode},</if>
+            <if test="telNumber != null">#{telNumber},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMineAddress" parameterType="MineAddress">
+        update mine_address
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="postalCode != null">postal_code = #{postalCode},</if>
+            <if test="provinceName != null">province_name = #{provinceName},</if>
+            <if test="cityName != null">city_name = #{cityName},</if>
+            <if test="countyName != null">county_name = #{countyName},</if>
+            <if test="detailInfo != null">detail_info = #{detailInfo},</if>
+            <if test="nationalCode != null">national_code = #{nationalCode},</if>
+            <if test="telNumber != null">tel_number = #{telNumber},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteMineAddressByUuid" parameterType="Long">
+        delete from mine_address where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteMineAddressByUuids" parameterType="String">
+        delete from mine_address where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+</mapper>

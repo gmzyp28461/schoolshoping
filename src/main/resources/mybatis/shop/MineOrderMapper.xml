@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoping.project.shop.mapper.MineOrderMapper">
+
+    <resultMap type="MineOrder" id="MineOrderResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="userId"    column="user_id"    />
+        <result property="orderCode"    column="order_code"    />
+        <result property="price"    column="price"    />
+        <result property="payPrice"    column="pay_price"    />
+        <result property="payTime"    column="pay_time"    />
+        <result property="payStatus"    column="pay_status"    />
+        <result property="busPayNo"    column="bus_pay_no"    />
+        <result property="prepayId"    column="prepay_id"    />
+        <result property="orderCodeType"    column="order_code_type"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="expressCode"    column="express_code"    />
+        <result property="receivingDate"    column="receiving_date"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="commStatus"    column="comm_status"    />
+        <result property="vipUserId"    column="vip_user_id"    />
+        <result property="vipCode"    column="vip_code"    />
+        <result property="discount"    column="discount"    />
+        <result property="ratio"    column="ratio"    />
+        <result property="commPrice"    column="comm_price"    />
+        <association property="user"     column="user_id" javaType="User" resultMap="userResult" />
+        <association property="address"     column="uuid" javaType="MineAddress" resultMap="addressResult" />
+        <collection  property="detailList"    javaType="java.util.List"        resultMap="detailResult" />
+    </resultMap>
+
+    <resultMap id="userResult" type="User">
+        <result property="userName"      column="user_name"       />
+    </resultMap>
+
+    <resultMap id="detailResult" type="MineOrderDetail">
+        <result property="goodsId"    column="goods_id"    />
+        <result property="price"    column="d_price"    />
+        <result property="num"    column="num"    />
+        <association property="goods"     column="goods_id" javaType="MineGoods" resultMap="goodsResult" />
+    </resultMap>
+
+    <resultMap id="goodsResult" type="MineGoods">
+        <result property="title"    column="title"    />
+        <result property="url"    column="url"    />
+    </resultMap>
+
+    <resultMap id="addressResult" type="MineAddress">
+        <result property="userName"    column="adduser_name"    />
+        <result property="provinceName"    column="province_name"    />
+        <result property="cityName"    column="city_name"    />
+        <result property="countyName"    column="county_name"    />
+        <result property="detailInfo"    column="detail_info"    />
+        <result property="telNumber"    column="tel_number"    />
+    </resultMap>
+
+
+    <sql id="selectMineOrderVo">
+        select o.uuid, o.user_id, o.order_code, o.price, o.pay_price, o.pay_time, o.pay_status, o.bus_pay_no, o.prepay_id, o.order_code_type, o.del_flag,
+         o.create_by, o.create_time, o.update_by, o.update_time, o.remark,o.express_code,o.receiving_date,o.delivery_date,o.comm_status,
+        o.vip_user_id, o.vip_code, o.discount, o.ratio, o.comm_price,
+	 d.price d_price,d.num,d.goods_id,g.title,g.url,u.user_name,a.user_name adduser_name, a.province_name, a.city_name, a.county_name, a.detail_info,a.tel_number
+	 from mine_order o
+	 LEFT JOIN  sys_user u on u.user_id= o.user_id
+	 LEFT JOIN mine_order_detail d on d.order_id = o.uuid
+	 LEFT JOIN mine_goods g on g.uuid = d.goods_id
+	 LEFT JOIN mine_address a on a.order_id = o.uuid
+    </sql>
+
+    <select id="selectMineOrderList" parameterType="MineOrder" resultMap="MineOrderResult">
+        <include refid="selectMineOrderVo"/>
+        <where>
+            o.pay_status not in ('10','20')
+            <if test="delFlag != null "> and o.del_flag='0'</if>
+            <if test="userId != null and userId!=0"> and o.user_id = #{userId}</if>
+            <if test="vipUserId != null and vipUserId!=0"> and o.vip_user_id = #{vipUserId}</if>
+            <if test="orderCode != null  and orderCode != ''"> and o.order_code  like concat('%', #{orderCode}, '%')</if>
+            <if test="payTime != null "> and pay_time = #{payTime}</if>
+            <if test="payStatus != null  and payStatus != ''"> and o.pay_status = #{payStatus}</if>
+            <if test="busPayNo != null  and busPayNo != ''"> and o.bus_pay_no = #{busPayNo}</if>
+            <if test="orderCodeType != null  and orderCodeType != ''"> and o.order_code_type = #{orderCodeType}</if>
+        </where>
+        order by o.create_time desc
+    </select>
+
+    <select id="selectMineOrderByUuid" parameterType="String" resultMap="MineOrderResult">
+        <include refid="selectMineOrderVo"/>
+        where o.uuid = #{uuid}
+    </select>
+
+    <insert id="insertMineOrder" parameterType="MineOrder">
+        insert into mine_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">uuid,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="orderCode != null">order_code,</if>
+            <if test="price != null">price,</if>
+            <if test="payPrice != null">pay_price,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="payStatus != null">pay_status,</if>
+            <if test="busPayNo != null">bus_pay_no,</if>
+            <if test="prepayId != null">prepay_id,</if>
+            <if test="orderCodeType != null">order_code_type,</if>
+            <if test="vipUserId != null">vip_user_id,</if>
+            <if test="vipCode != null">vip_code,</if>
+            <if test="discount != null">discount,</if>
+            <if test="ratio != null">ratio,</if>
+            <if test="commPrice != null">comm_price,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">#{uuid},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="orderCode != null">#{orderCode},</if>
+            <if test="price != null">#{price},</if>
+            <if test="payPrice != null">#{payPrice},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="payStatus != null">#{payStatus},</if>
+            <if test="busPayNo != null">#{busPayNo},</if>
+            <if test="prepayId != null">#{prepayId},</if>
+            <if test="orderCodeType != null">#{orderCodeType},</if>
+            <if test="vipUserId != null">#{vipUserId},</if>
+            <if test="vipCode != null">#{vipCode},</if>
+            <if test="discount != null">#{discount},</if>
+            <if test="ratio != null">#{ratio},</if>
+            <if test="commPrice != null">#{commPrice},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMineOrder" parameterType="MineOrder">
+        update mine_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="orderCode != null">order_code = #{orderCode},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="payPrice != null">pay_price = #{payPrice},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="payStatus != null">pay_status = #{payStatus},</if>
+            <if test="busPayNo != null">bus_pay_no = #{busPayNo},</if>
+            <if test="prepayId != null">prepay_id = #{prepayId},</if>
+            <if test="orderCodeType != null">order_code_type = #{orderCodeType},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="expressCode != null">express_code = #{expressCode},</if>
+            <if test="receivingDate != null">receiving_date = #{receivingDate},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="commStatus != null">comm_status = #{commStatus},</if>
+            <if test="vipUserId != null">vip_user_id = #{vipUserId},</if>
+            <if test="vipCode != null">vip_code = #{vipCode},</if>
+            <if test="discount != null">discount = #{discount},</if>
+            <if test="ratio != null">ratio = #{ratio},</if>
+            <if test="commPrice != null">comm_price = #{commPrice},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteMineOrderByUuid" parameterType="String">
+       update  mine_order set del_flag='2' where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteMineOrderByUuids" parameterType="String">
+        update  mine_order set del_flag='2' where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+</mapper>

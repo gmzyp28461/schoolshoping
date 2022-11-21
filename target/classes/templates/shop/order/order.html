@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('订单信息列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <input name="payStatus" id="payStatus" th:value="${payStatus}" type="hidden">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>订单号：</label>
+                                <input type="text" name="orderCode"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('shop:order:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('shop:order:refunds')}]];
+        var datas = [[${@dict.getType('shop_pay_status')}]];
+        var payStatus= [[${payStatus}]];
+        var prefix = ctx + "shop/order";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "订单信息",
+                columns: [
+                {
+                    field: 'uuid',
+                    title: '主键',
+                    visible: false
+                },
+                {
+                    field: 'user.userName',
+                    title: '用户名'
+                },
+
+                    {
+                        field: 'price',
+                        title: '应支付',
+                        formatter: function(value, row, index) {
+                            return value/100;
+                        }
+                    },
+                {
+                    field: 'payPrice',
+                    title: '实支付',
+                    formatter: function(value, row, index) {
+                        return value/100;
+                    }
+                },
+                    {
+                        field: 'vipCode',
+                        title: '合伙人码'
+                    }, {
+                        field: 'discount',
+                        title: '折扣(%)'
+                    }, {
+                        field: 'ratio',
+                        title: '提成(%)'
+                    }, {
+                        field: 'commPrice',
+                        title: '提成金额',
+                        formatter: function(value, row, index) {
+                            return value;
+                        }
+                    },
+                {
+                    field: 'payTime',
+                    title: '支付时间'
+                },
+                    {
+                        field: 'expressCode',
+                        title: '快递单号'
+                    },
+                    {
+                        field: 'payStatus',
+                        title: '地址',
+                        align: "left",
+                        formatter: function(value, item, index) {
+
+                            if (item.address!=null){
+                                return "<div>"+item.address.userName+" "+item.address.telNumber+"<br/>" +
+                                    ""+item.address.provinceName+" "+item.address.cityName+" "+item.address.countyName+"<br/>" +
+                                    ""+item.address.detailInfo+"</div>";
+                            }else{
+                                return "";
+                            }
+
+
+                        }
+
+                    },
+                    {
+                        field: 'payStatus',
+                        title: '订单详情',
+                        align: "left",
+                        formatter: function(value, item, index) {
+                            var html="";
+
+                            if (item.detailList.length>0) {
+                                $.each(item.detailList, function(i, element){
+                                    html+="<div>"+$.table.imageView(element.goods.url,500,500);
+                                    html+=element.goods.title+" <br/> 单价："+element.price/100+"  数量："+element.num+"</div>";
+
+                                })
+                            }
+
+                            return html;
+                        }
+                    },
+                {
+                    visible: payStatus == '30' ? true : false,
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="send(\'' + row.uuid + '\')"><i class="fa fa-info"></i>发货</a> ');
+
+
+                        // actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.uuid + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+            $.table.search();
+        });
+
+        function refunds(uuid) {
+            $.modal.open("退款", prefix + "/goRefunds/"+uuid,'',250);
+        }
+
+        function send(uuid){
+            $.modal.open("发货", prefix + "/edit/"+uuid,300,400);
+        }
+    </script>
+</body>
+</html>

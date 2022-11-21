@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增订单地址')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-address-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">订单id：</label>
+                <div class="col-sm-8">
+                    <input name="orderId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">用户id：</label>
+                <div class="col-sm-8">
+                    <input name="userId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">名称：</label>
+                <div class="col-sm-8">
+                    <input name="userName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">邮编：</label>
+                <div class="col-sm-8">
+                    <input name="postalCode" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">国标收货地址第一级地址：</label>
+                <div class="col-sm-8">
+                    <input name="provinceName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">国标收货地址第二级地址：</label>
+                <div class="col-sm-8">
+                    <input name="cityName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">国标收货地址第三级地址：</label>
+                <div class="col-sm-8">
+                    <input name="countyName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">详细收货地址信息：</label>
+                <div class="col-sm-8">
+                    <input name="detailInfo" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">收货地址国家码：</label>
+                <div class="col-sm-8">
+                    <input name="nationalCode" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">收货人手机号码：</label>
+                <div class="col-sm-8">
+                    <input name="telNumber" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "shop/address"
+        $("#form-address-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-address-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

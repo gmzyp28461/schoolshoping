@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改订单地址')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-address-edit" th:object="${mineAddress}">
+            <input name="uuid" th:field="*{uuid}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">订单id：</label>
+                <div class="col-sm-8">
+                    <input name="orderId" th:field="*{orderId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">用户id：</label>
+                <div class="col-sm-8">
+                    <input name="userId" th:field="*{userId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">名称：</label>
+                <div class="col-sm-8">
+                    <input name="userName" th:field="*{userName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">邮编：</label>
+                <div class="col-sm-8">
+                    <input name="postalCode" th:field="*{postalCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">国标收货地址第一级地址：</label>
+                <div class="col-sm-8">
+                    <input name="provinceName" th:field="*{provinceName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">国标收货地址第二级地址：</label>
+                <div class="col-sm-8">
+                    <input name="cityName" th:field="*{cityName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">国标收货地址第三级地址：</label>
+                <div class="col-sm-8">
+                    <input name="countyName" th:field="*{countyName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">详细收货地址信息：</label>
+                <div class="col-sm-8">
+                    <input name="detailInfo" th:field="*{detailInfo}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">收货地址国家码：</label>
+                <div class="col-sm-8">
+                    <input name="nationalCode" th:field="*{nationalCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">收货人手机号码：</label>
+                <div class="col-sm-8">
+                    <input name="telNumber" th:field="*{telNumber}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "shop/address";
+        $("#form-address-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-address-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

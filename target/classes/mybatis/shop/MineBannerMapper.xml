@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoping.project.shop.mapper.MineBannerMapper">
+
+    <resultMap type="MineBanner" id="MineBannerResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="title"    column="title"    />
+        <result property="url"    column="url"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMineBannerVo">
+        select uuid, title, url, goods_id, del_flag, create_by, create_time, update_by, update_time, remark from mine_banner
+    </sql>
+
+    <select id="selectMineBannerList" parameterType="MineBanner" resultMap="MineBannerResult">
+        <include refid="selectMineBannerVo"/>
+        <where>
+            del_flag='0'
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+            <if test="goodsId != null  and goodsId != ''"> and goods_id = #{goodsId}</if>
+        </where>
+    </select>
+
+    <select id="selectMineBannerByUuid" parameterType="Long" resultMap="MineBannerResult">
+        <include refid="selectMineBannerVo"/>
+        where uuid = #{uuid}
+    </select>
+
+    <insert id="insertMineBanner" parameterType="MineBanner" useGeneratedKeys="true" keyProperty="uuid">
+        insert into mine_banner
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="url != null">url,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="url != null">#{url},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMineBanner" parameterType="MineBanner">
+        update mine_banner
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteMineBannerByUuid" parameterType="Long">
+        update  mine_banner set del_flag='2' where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteMineBannerByUuids" parameterType="String">
+        update  mine_banner set del_flag='2' where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoping.project.shop.mapper.MineTypeMapper">
+
+    <resultMap type="MineType" id="MineTypeResult">
+        <result property="typeId"    column="type_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="ancestors"    column="ancestors"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="coverImg"    column="cover_img"    />
+        <result property="indexStatus"    column="index_status"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="parentName"    column="parent_name"    />
+    </resultMap>
+
+    <sql id="selectMineTypeVo">
+        select type_id, parent_id, ancestors, type_name, order_num, cover_img, index_status, status, del_flag, create_by, create_time, update_by, update_time, remark from mine_type
+    </sql>
+
+    <select id="selectMineTypeList" parameterType="MineType" resultMap="MineTypeResult">
+        <include refid="selectMineTypeVo"/>
+        <where>
+            del_flag = '0'
+            <if test="typeId != null and typeId != 0">
+                AND type_id = #{typeId}
+            </if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="ancestors != null  and ancestors != ''"> and ancestors = #{ancestors}</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="orderNum != null "> and order_num = #{orderNum}</if>
+            <if test="coverImg != null  and coverImg != ''"> and cover_img = #{coverImg}</if>
+            <if test="indexStatus != null  and indexStatus != ''"> and index_status = #{indexStatus}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by parent_id, order_num
+    </select>
+
+    <select id="selectMineTypeByTypeId" parameterType="Long" resultMap="MineTypeResult">
+       select t.type_id, t.parent_id, t.ancestors, t.type_name,t.order_num, t.cover_img,t.index_status, t.status, t.del_flag, t.create_by, t.create_time, t.update_by, t.update_time, t.remark,
+
+       (select type_name from mine_type where type_id = t.parent_id) parent_name
+        from mine_type t
+        where t.type_id = #{typeId}
+    </select>
+
+    <insert id="insertMineType" parameterType="MineType" useGeneratedKeys="true" keyProperty="typeId">
+        insert into mine_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="ancestors != null">ancestors,</if>
+            <if test="typeName != null">type_name,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="coverImg != null">cover_img,</if>
+            <if test="indexStatus != null">index_status,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="ancestors != null">#{ancestors},</if>
+            <if test="typeName != null">#{typeName},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="coverImg != null">#{coverImg},</if>
+            <if test="indexStatus != null">#{indexStatus},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMineType" parameterType="MineType">
+        update mine_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="ancestors != null">ancestors = #{ancestors},</if>
+            <if test="typeName != null">type_name = #{typeName},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="coverImg != null">cover_img = #{coverImg},</if>
+            <if test="indexStatus != null">index_status = #{indexStatus},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where type_id = #{typeId}
+    </update>
+
+    <delete id="deleteMineTypeByTypeId" parameterType="Long">
+        update mine_type set del_flag='2' where type_id = #{typeId}
+    </delete>
+
+    <delete id="deleteMineTypeByTypeIds" parameterType="String">
+        update mine_type set del_flag='2' where type_id in
+        <foreach item="typeId" collection="array" open="(" separator="," close=")">
+            #{typeId}
+        </foreach>
+    </delete>
+
+    <select id="checkTypeNameUnique" resultMap="MineTypeResult">
+        <include refid="selectMineTypeVo"/>
+        where type_name=#{typeName} and parent_id = #{parentId} limit 1
+    </select>
+
+    <select id="selectTypeCount" parameterType="MineType" resultType="int">
+        select count(1) from mine_type
+        where del_flag = '0'
+        <if test="typeId != null and typeId != 0"> and type_id = #{typeId} </if>
+        <if test="parentId != null and parentId != 0"> and parent_id = #{parentId} </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoping.project.shop.mapper.MineOrderDetailMapper">
+
+    <resultMap type="MineOrderDetail" id="MineOrderDetailResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="price"    column="price"    />
+        <result property="num"    column="num"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectMineOrderDetailVo">
+        select uuid, goods_id, user_id, order_id, price, num, create_by, create_time from mine_order_detail
+    </sql>
+
+    <select id="selectMineOrderDetailList" parameterType="MineOrderDetail" resultMap="MineOrderDetailResult">
+        <include refid="selectMineOrderDetailVo"/>
+        <where>
+            <if test="goodsId != null  and goodsId != ''"> and goods_id = #{goodsId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="num != null "> and num = #{num}</if>
+        </where>
+    </select>
+
+    <select id="selectMineOrderDetailByUuid" parameterType="String" resultMap="MineOrderDetailResult">
+        <include refid="selectMineOrderDetailVo"/>
+        where uuid = #{uuid}
+    </select>
+
+    <insert id="insertMineOrderDetail" parameterType="MineOrderDetail">
+        insert into mine_order_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">uuid,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="price != null">price,</if>
+            <if test="num != null">num,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">#{uuid},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="price != null">#{price},</if>
+            <if test="num != null">#{num},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMineOrderDetail" parameterType="MineOrderDetail">
+        update mine_order_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="num != null">num = #{num},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteMineOrderDetailByUuid" parameterType="String">
+        delete from mine_order_detail where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteMineOrderDetailByUuids" parameterType="String">
+        delete from mine_order_detail where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+
+    <insert id="batchDetails">
+        insert into mine_order_detail(uuid, goods_id, user_id, order_id, price, num, create_by, create_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.uuid},#{item.goodsId},#{item.userId},#{item.orderId},#{item.price},#{item.num},#{item.createBy},#{item.createTime})
+        </foreach>
+    </insert>
+
+</mapper>

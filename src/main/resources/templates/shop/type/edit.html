@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改分类')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-type-edit" th:object="${mineType}"  enctype="multipart/form-data">
+            <input name="typeId" th:field="*{typeId}" type="hidden">
+            <input id="treeId" name="parentId" type="hidden" th:field="*{parentId}" />
+            <div class="form-group">
+                <label class="col-sm-3 control-label">父级：</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <input class="form-control" type="text" id="treeName" onclick="selectTypeTree()" readonly="true" th:field="*{parentName}">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">名称：</label>
+                <div class="col-sm-8">
+                    <input name="typeName" th:field="*{typeName}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">显示顺序：</label>
+                <div class="col-sm-8">
+                    <input name="orderNum" th:field="*{orderNum}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">封面：</label>
+                <div class="col-sm-8">
+                    <input name="photoFile" type="file" class="form-control"></input>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-8">
+
+                    <img th:src="${mineType.coverImg}" height="100">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">首页推荐：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('shop_index_status')}">
+                        <input type="radio" th:id="${dict.dictCode}" name="indexStatus" th:value="${dict.dictValue}" th:field="*{indexStatus}">
+                        <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">状态：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('sys_normal_disable')}">
+                        <input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:field="*{status}">
+                        <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <textarea name="remark" class="form-control">[[*{remark}]]</textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "shop/type";
+        $("#form-type-edit").validate({
+            onkeyup: false,
+            rules:{
+                typeName:{
+                    remote: {
+                        url: prefix + "/checkTypeNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "deptId": function() {
+                                return $("#typeId").val();
+                            },
+                            "parentId": function() {
+                                return $("input[name='parentId']").val();
+                            },
+                            "typeName": function() {
+                                return $.common.trim($("#typeName").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },
+                orderNum:{
+                    digits:true
+                }
+            },
+            messages: {
+                "typeName": {
+                    remote: "类型已经存在"
+                }
+            },
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+
+                var formData = new FormData($("#form-type-edit")[0]);
+                $.ajax({
+                    url: prefix + "/edit",
+                    data: formData,
+                    type: "post",
+                    processData: false,
+                    contentType: false,
+                    success: function(result) {
+                        $.operate.successCallback(result);
+                    }
+                });
+
+            }
+        }
+        function selectTypeTree() {
+            var deptId = $("#treeId").val();
+            var excludeId = $("input[name='typeId']").val();
+            if(deptId > 0) {
+                var options = {
+                    title: '类型选择',
+                    width: "380",
+                    url: prefix + "/selectTypeTree/" + $("#treeId").val() + "/" + excludeId,
+                    callBack: doSubmit
+                };
+                $.modal.openOptions(options);
+            } else {
+                $.modal.alertError("父类型不能选择");
+            }
+        }
+
+        function doSubmit(index, layero){
+            var tree = layero.find("iframe")[0].contentWindow.$._tree;
+            if ($.tree.notAllowLastLevel(tree)) {
+                var body = $.modal.getChildFrame(index);
+                $("#treeId").val(body.find('#treeId').val());
+                $("#treeName").val(body.find('#treeName').val());
+                $.modal.close(index);
+            }
+        }
+    </script>
+</body>
+</html>

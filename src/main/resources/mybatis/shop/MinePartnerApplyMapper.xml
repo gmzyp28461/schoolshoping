@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoping.project.shop.mapper.MinePartnerApplyMapper">
+
+    <resultMap type="MinePartnerApply" id="MinePartnerApplyResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="userId"    column="user_id"    />
+        <result property="content"    column="content"    />
+        <result property="phoneNum"    column="phone_num"    />
+        <result property="userName"    column="user_name"    />
+        <result property="discount"    column="discount"    />
+        <result property="ratio"    column="ratio"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <association property="user"     column="user_id" javaType="User" resultMap="UserResult" />
+    </resultMap>
+
+    <resultMap type="User" id="UserResult">
+        <id     property="userId"        column="user_id"         />
+        <result property="userName"      column="user_name"       />
+        <result property="inviteCode"        column="invite_code"          />
+    </resultMap>
+
+    <sql id="selectMinePartnerApplyVo">
+        select a.uuid, a.user_id, a.content, a.phone_num, a.user_name, a.discount, a.ratio, a.status, a.del_flag, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,
+         u.avatar,u.user_name,u.invite_code
+         from mine_partner_apply a
+	    LEFT JOIN sys_user u on u.user_id = a.user_id
+    </sql>
+
+    <select id="selectMinePartnerApplyList" parameterType="MinePartnerApply" resultMap="MinePartnerApplyResult">
+        <include refid="selectMinePartnerApplyVo"/>
+        <where>
+            a.del_flag='0'
+            <if test="userId != null and userId!=0"> and a.user_id = #{userId}</if>
+            <if test="content != null  and content != ''"> and a.content = #{content}</if>
+            <if test="phoneNum != null  and phoneNum != ''"> and a.phone_num like concat('%', #{phoneNum}, '%')</if>
+            <if test="userName != null  and userName != ''"> and a.user_name like concat('%', #{userName}, '%')</if>
+            <if test="discount != null "> and a.discount = #{discount}</if>
+            <if test="ratio != null "> and a.ratio = #{ratio}</if>
+            <if test="status != null  and status != ''"> and a.status = #{status}</if>
+        </where>
+        order by  a.create_time desc,a.status asc
+    </select>
+
+    <select id="selectMinePartnerApplyByUuid" parameterType="Integer" resultMap="MinePartnerApplyResult">
+        <include refid="selectMinePartnerApplyVo"/>
+        where a.uuid = #{uuid}
+    </select>
+
+    <insert id="insertMinePartnerApply" parameterType="MinePartnerApply" useGeneratedKeys="true" keyProperty="uuid">
+        insert into mine_partner_apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="content != null">content,</if>
+            <if test="phoneNum != null">phone_num,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="discount != null">discount,</if>
+            <if test="ratio != null">ratio,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="phoneNum != null">#{phoneNum},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="discount != null">#{discount},</if>
+            <if test="ratio != null">#{ratio},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMinePartnerApply" parameterType="MinePartnerApply">
+        update mine_partner_apply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="phoneNum != null">phone_num = #{phoneNum},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="discount != null">discount = #{discount},</if>
+            <if test="ratio != null">ratio = #{ratio},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteMinePartnerApplyByUuid" parameterType="Integer">
+        update  mine_partner_apply set del_flag='2' where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteMinePartnerApplyByUuids" parameterType="String">
+        update  mine_partner_apply set del_flag='2' where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoping.project.shop.mapper.MineCommentMapper">
+
+    <resultMap type="MineComment" id="MineCommentResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="content"    column="content"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <association property="user"     column="user_id" javaType="User" resultMap="UserResult" />
+        <association property="goods"     column="goods_id" javaType="MineGoods" resultMap="MineGoodsResult" />
+    </resultMap>
+
+    <resultMap type="MineGoods" id="MineGoodsResult">
+        <result property="title"    column="title"    />
+        <result property="url"    column="url"    />
+        <result property="price"    column="price"    />
+    </resultMap>
+
+    <resultMap type="User" id="UserResult">
+        <id     property="userId"        column="user_id"         />
+        <result property="userName"      column="user_name"       />
+        <result property="avatar"        column="avatar"          />
+    </resultMap>
+
+    <sql id="selectMineCommentVo">
+    select c.uuid, c.goods_id, c.user_id, c.content, c.del_flag, c.create_by, c.create_time, c.update_by, c.update_time, c.remark,
+	 u.avatar,u.user_name,g.title, g.url,g.price
+	 from mine_comment c
+	 LEFT JOIN sys_user u on u.user_id = c.user_id
+	 LEFT JOIN mine_goods g on c.goods_id = g.uuid
+    </sql>
+
+    <select id="selectMineCommentList" parameterType="MineComment" resultMap="MineCommentResult">
+        <include refid="selectMineCommentVo"/>
+        <where>
+            c.del_flag='0'
+            <if test="goodsId != null  and goodsId != 0"> and c.goods_id = #{goodsId}</if>
+            <if test="userId != null and userId!=0"> and c.user_id = #{userId}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="content != null  and content != ''"> and c.content like concat('%', #{content}, '%')</if>
+            <if test="params.menuName != null and params.menuName != ''"> and m.menu_name like concat('%', #{menuName}, '%')</if>
+            <if test="params.userName != null and params.userName != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
+        </where>
+        order by c.create_time desc
+    </select>
+
+    <select id="selectMineCommentByUuid" parameterType="Long" resultMap="MineCommentResult">
+        <include refid="selectMineCommentVo"/>
+        where c.uuid = #{uuid}
+    </select>
+
+    <insert id="insertMineComment" parameterType="MineComment" useGeneratedKeys="true" keyProperty="uuid">
+        insert into mine_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">goods_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="content != null">content,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMineComment" parameterType="MineComment">
+        update mine_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteMineCommentByUuid" parameterType="Long">
+       update mine_comment set  del_flag='2'  where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteMineCommentByUuids" parameterType="String">
+        update mine_comment set  del_flag='2'   where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+</mapper>

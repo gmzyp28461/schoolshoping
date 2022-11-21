@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoping.project.shop.mapper.MineGoodsMapper">
+
+    <resultMap type="MineGoods" id="MineGoodsResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="title"    column="title"    />
+        <result property="url"    column="url"    />
+        <result property="costPrice"    column="cost_price"    />
+        <result property="price"    column="price"    />
+        <result property="stock"    column="stock"    />
+        <result property="content"    column="content"    />
+        <result property="indexStatus"    column="index_status"    />
+        <result property="state"    column="state"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="collectCount"    column="collect_count"    />
+        <result property="commentCount"    column="comment_count"    />
+        <result property="collectStatus"    column="collect_status"    />
+        <association property="type"     column="type_id" javaType="MineType" resultMap="typeResult" />
+    </resultMap>
+
+    <resultMap type="MineType" id="typeResult">
+        <id     property="typeId"    column="type_id"     />
+        <result property="typeName"    column="type_name"    />
+    </resultMap>
+
+    <sql id="selectMineGoodsVo">
+         select g.uuid, g.type_id, g.title, g.url, g.cost_price, g.price, g.stock, g.content,g.index_status, g.state, g.del_flag, g.create_by, g.create_time, g.update_by, g.update_time, g.remark,
+		 t.type_name,
+		 (select count(1) from mine_collect c where c.goods_id = g.uuid) collect_count,
+         (select count(1) from mine_comment c where c.del_flag='0' and c.goods_id = g.uuid) comment_count
+        <if test="statusToken != null and statusToken!=''">
+            ,CASE WHEN (select count(1) from mine_collect c where c.user_id=#{statusToken} and c.goods_id =g.uuid)>0  THEN
+            'star'
+            ELSE
+            'star-o'
+            END  as  collect_status
+        </if>
+		 from mine_goods g
+		 LEFT JOIN mine_type t on t.type_id = g.type_id
+     </sql>
+
+    <select id="selectMineGoodsList" parameterType="MineGoods" resultMap="MineGoodsResult">
+        <include refid="selectMineGoodsVo"/>
+        <where>
+            g.del_flag='0'
+            <if test="uuid != null  and uuid !=0"> and g.uuid = #{uuid}</if>
+            <if test="title != null  and title != ''"> and g.title like concat('%', #{title}, '%')</if>
+            <if test="searchValue != null  and searchValue != ''"> and g.title like concat('%', #{searchValue}, '%')</if>
+            <if test="indexStatus != null  and indexStatus != ''"> and g.index_status = #{indexStatus}</if>
+            <if test="state != null  and state != ''"> and g.state = #{state}</if>
+            <if test="typeId != null and typeId !=''">
+                AND (g.type_id = #{typeId} OR g.type_id IN ( SELECT t.type_id FROM mine_type t WHERE FIND_IN_SET (#{typeId},ancestors) ))
+            </if>
+            <if test="topLike != null  and topLike != ''">
+                and g.uuid in (select b.goods_id from (SELECT a.goods_id FROM mine_collect a GROUP BY a.goods_id ORDER BY COUNT( 1 ) DESC LIMIT 6) b )
+            </if>
+        </where>
+        order by g.create_time desc
+    </select>
+
+    <select id="selectMineGoodsByUuid" parameterType="Long" resultMap="MineGoodsResult">
+        <include refid="selectMineGoodsVo"/>
+        where g.uuid = #{uuid}
+    </select>
+
+    <insert id="insertMineGoods" parameterType="MineGoods" useGeneratedKeys="true" keyProperty="uuid">
+        insert into mine_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeId != null">type_id,</if>
+            <if test="title != null">title,</if>
+            <if test="url != null">url,</if>
+            <if test="costPrice != null">cost_price,</if>
+            <if test="price != null">price,</if>
+            <if test="stock != null">stock,</if>
+            <if test="content != null">content,</if>
+            <if test="indexStatus != null">index_status,</if>
+            <if test="state != null">state,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="typeId != null">#{typeId},</if>
+            <if test="title != null">#{title},</if>
+            <if test="url != null">#{url},</if>
+            <if test="costPrice != null">#{costPrice},</if>
+            <if test="price != null">#{price},</if>
+            <if test="stock != null">#{stock},</if>
+            <if test="content != null">#{content},</if>
+            <if test="indexStatus != null">#{indexStatus},</if>
+            <if test="state != null">#{state},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMineGoods" parameterType="MineGoods">
+        update mine_goods
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeId != null">type_id = #{typeId},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="costPrice != null">cost_price = #{costPrice},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="stock != null">stock = #{stock},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="indexStatus != null">index_status = #{indexStatus},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteMineGoodsByUuid" parameterType="Long">
+         update  mine_goods set del_flag='2'  where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteMineGoodsByUuids" parameterType="String">
+        update  mine_goods set del_flag='2'  where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+
+</mapper>
