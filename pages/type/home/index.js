@@ -1,0 +1,116 @@
+// pages/type/index.js
+
+const app = getApp();
+const api = require("../../../utils/api.js");
+Page({
+
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    baseUrl:app.globalData.baseUrl,
+    activeKey: 0,
+    typeList:[],
+    childList:[]
+  },
+  onChange(event) {
+    let uuid = event.currentTarget.dataset.uuid;
+    this.reqChildTypeList(uuid);
+   
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    this.reqTypeList();
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+    this.getTabBar().init(); 
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload: function () {
+
+  },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: function () {
+
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function () {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+
+  },
+  reqChildTypeList:function(parentId) {
+    let _this = this;
+    api.post("/app/v1/mini/getType", {
+      "parentId":parentId
+    }).then(res => {
+      _this.setData({
+        childList:res.data.data
+      })
+    });
+  },
+  reqTypeList:function() {
+    let _this = this;
+    api.post("/app/v1/mini/getType", {
+      "parentId":'0'
+    }).then(res => {
+
+      if(res.data.data.length>0){
+        let uuid = res.data.data[0].typeId;
+        this.reqChildTypeList(uuid);
+      }
+     
+
+
+      _this.setData({
+        typeList:res.data.data
+      })
+    });
+  },
+  list:function(e) {
+    let uuid = e.currentTarget.dataset.uuid;
+    let typeName = e.currentTarget.dataset.title;
+    wx.navigateTo({
+      url: '/pages/type/list/index?typeId='+uuid+"&title="+typeName,
+    })
+  },
+  search:function(){
+    wx.navigateTo({
+      url: '/pages/type/search/index',
+    })
+  }
+})

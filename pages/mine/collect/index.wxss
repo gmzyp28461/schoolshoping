@@ -1,0 +1,4 @@
+/* pages/mine/collect/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}

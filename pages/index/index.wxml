@@ -1,0 +1,40 @@
+<!--pages/index/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" >
+  <view slot="content">微笑购</view>
+</cu-custom>
+<swiper class="screen-swiper {{DotStyle?'square-dot':'round-dot'}}" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+  <swiper-item wx:for="{{bannerList}}" wx:key bindtap="detail" data-uuid="{{item.goodsId}}">
+    <image src="{{baseUrl}}{{item.url}}" mode="aspectFill" class="swiper-img"></image>
+  </swiper-item>
+</swiper>
+
+<van-search value="{{ value }}"  shape="round"
+  background="linear-gradient(45deg, #ec008c, #6739b6)" placeholder="搜索商品"  bind:click-input="search"/>
+
+<van-grid column-num="5"  border="{{ false }}">
+  <van-grid-item use-slot bind:click="list"  data-uuid="{{item.typeId}}"  data-title="{{item.typeName}}" wx:for="{{typeList}}" wx:if="{{index<10}}">
+    <view class="cu-avatar lg round view-img" style="background-image:url({{baseUrl}}{{item.coverImg}});"></view>
+    <view style="text-align: center;" class="text-view">{{item.typeName}}</view>
+  </van-grid-item>
+</van-grid>
+
+<van-grid column-num="2"  border="{{ false }}">
+  <van-grid-item use-slot bind:click="detail"  wx:for="{{ recoList }}" data-uuid="{{item.uuid}}">
+    <image style="height: 180px;border-radius:5px;" src="{{baseUrl}}{{item.url}}" />
+    <view style="margin-top: 10rpx;" >{{item.title}}</view>
+    <view  style="margin-top: 10rpx;">￥{{item.price}}</view>
+    <view class="cu-tag badge">
+      <van-icon name="fire-o" />
+    </view>
+  </van-grid-item>
+</van-grid>
+<van-grid column-num="2"  border="{{ false }}">
+  <van-grid-item use-slot bind:click="detail"  wx:for="{{ indexList }}"  data-uuid="{{item.uuid}}">
+    <image style="height: 180px;border-radius:5px;" src="{{baseUrl}}{{item.url}}" />
+    <view  style="margin-top: 10rpx;height:40rpx">{{item.title}}</view>
+    <view  style="margin-top: 10rpx;">￥{{item.price}}</view>
+  </van-grid-item>
+</van-grid>
+
+
+<view class='cu-tabbar-height'></view>

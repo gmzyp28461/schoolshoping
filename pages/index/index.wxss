@@ -1,0 +1,36 @@
+/* pages/index/index.wxss */
+/* page{
+  background: #fff;
+} */
+.cu-bar{
+  box-sizing: border-box;
+}
+
+.view-img{
+  border-radius: 10rpx;
+  width: 120rpx !important;
+  height: 120rpx !important;
+  background-size: 100% 100%;
+}
+
+.text-view{
+  height: 40rpx;
+}
+
+.cu-tag.badge {
+  border-radius: 200rpx;
+  position: absolute;
+  top: 35rpx;
+  right: 30rpx;
+  font-size: 20rpx;
+  padding: 0rpx 10rpx;
+  height: 28rpx;
+  color: var(--white);
+}
+.van-grid-item__content {
+  display:block !important
+}
+
+.swiper-img{
+  background-size: 100% 100%;
+}

@@ -1,0 +1,65 @@
+<!--pages/type/detail/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="content">{{info.title}}</view>
+</cu-custom>
+<van-toast id="van-toast" />
+
+<view class="padding-sm">
+
+  <rich-text nodes=" {{info.content}}"></rich-text>
+
+</view>
+<text class="text-gray padding-sm text-xs">商品更新于 {{info.createTime}}</text>
+
+
+<view class=" text-xl padding">
+  <text class="text-black text-bold">评论</text>
+</view>
+
+<view class="cu-list menu-avatar comment solids-top">
+  <view class="cu-item" wx:for="{{commentList}}" wx:if="{{commentList.length>0&&index<2}}">
+    <view class="cu-avatar round" style="background-image:url({{item.user.avatar}});"></view>
+    <view class="content">
+      <view class="text-grey">{{item.user.userName}}</view>
+      <view class="padding-sm radius margin-top-sm  text-sm">
+        <view class="flex">
+          <view>{{item.content}}</view>
+        </view>
+      </view>
+      <view class="margin-top-sm flex justify-between">
+        <view class="text-gray text-df">{{item.createTime}}</view>
+      </view>
+    </view>
+  </view>
+
+
+  <view wx:if="{{commentList.length==0}}">
+    <van-empty description="暂无评论" />
+  </view>
+
+</view>
+
+<view class=" text-am padding-sm">
+  <text class="text-red" bindtap="onClickComment">查看全部({{info.commentCount}})</text>
+</view>
+
+
+<view class='cu-tabbar-height'></view>
+<view class='cu-tabbar-height'></view>
+
+<van-goods-action>
+  <van-goods-action-icon icon="{{info.collectStatus}}" text="收藏" bind:click="onClickCollect"
+    data-status="{{info.collectStatus}}" icon-class="iconColor" text-class="iconColor" />
+  <van-goods-action-icon icon="chat-o" text="客服" color="#ee0a24" open-type="contact" bind:click="aftermarket" />
+  <van-goods-action-icon icon="cart-o" text="购物车" bind:click="cart" />
+  <van-goods-action-button type="warning" text="加入购物车" type="warning" bind:click="cartSave" />
+  <van-goods-action-button type="danger" text="立即购买" bind:click="buyNow" />
+</van-goods-action>
+
+
+
+<van-popup show="{{ show }}" round closeable close-icon="close" position="bottom" custom-style="height: 60%"
+  bind:close="onClose">
+  <comment list="{{commentList}}"></comment>
+
+</van-popup>

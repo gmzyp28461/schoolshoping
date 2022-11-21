@@ -1,0 +1,22 @@
+<!--pages/type/search/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="content">搜索</view>
+</cu-custom>
+<van-search value="{{ value }}"  shape="round"
+background="linear-gradient(45deg, #ec008c, #6739b6)" placeholder="搜索商品" maxlength='20' bind:search="searchLibrary"/>
+
+
+  <view class="cu-bar margin-top bg-white">
+  <view class="action">
+   
+  </view>
+  <view class="action">
+   <text class="cuIcon-delete lg text-gray" bindtap="removeHistory"></text>
+  </view>
+</view>
+
+  <view class="padding-sm flex flex-wrap">
+  <view class="padding-xs" wx:for="{{hList}}" wx:key bindtap="findSearch" data-title="{{item}}">
+    <view class="cu-tag line-grey radius">{{item}}</view>
+  </view>
+</view>

@@ -1,0 +1,61 @@
+<!--pages/cart/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" >
+  <view slot="content">购物车</view>
+</cu-custom>
+<van-toast id="van-toast" />
+<view wx:if="{{cartList.length>0}}">
+<van-swipe-cell right-width="{{ 50 }}" wx:for="{{cartList}}">
+  <van-cell-group>
+    <van-row custom-class="rowClass">
+      <van-col span="2" >
+        <van-checkbox value="{{item.checked}}"  bind:change="checkClick" custom-class="checkboxClass"  data-uuid="{{item.uuid}}" ></van-checkbox>
+      </van-col>
+      <van-col span="22">
+          <van-card
+              price="{{item.goods.price}}"
+              origin-price="{{item.goods.costPrice}}"
+              title="{{item.goods.title}}"
+              custom-class="customClass"
+            >
+
+            <view slot="thumb">
+              <image style="height: 100px;border-radius:5px;" src="{{baseUrl}}{{item.goods.url}}" bindtap="detail"  data-uuid="{{item.goodsId}}"/>
+            </view>
+            <view slot="num" class="numRight">
+              <van-stepper value="{{ item.num }}" integer step="1" bind:change="changeClick"  data-uuid="{{item.uuid}}"/>
+            </view>
+              </van-card>
+      </van-col>
+    </van-row>
+  </van-cell-group>
+  <view slot="right" class="cell__right align-center" bindtap="removeCart" data-uuid="{{item.goodsId}}">删除</view>
+</van-swipe-cell>
+</view>
+
+
+
+<view wx:if="{{cartList.length==0}}">
+  <van-empty description="购物车还没有商品 快去商城逛逛吧~">
+    <van-button round type="info" block class="bottom-button" bind:click="goshop">去商城</van-button>
+  </van-empty>
+</view>
+
+
+
+<van-submit-bar
+  price="{{ priceAll }}"
+  button-text="去结算"
+  bind:submit="onClickButton"
+  tip="{{ true }}"
+  custom-class="bar-class"
+>
+  <van-tag type="primary">
+    <van-radio-group value="{{ radio }}" bind:change="chooseAll">
+  <van-radio name="1">全选</van-radio>
+</van-radio-group>
+  </van-tag>
+</van-submit-bar>
+
+
+<view class='cu-tabbar-height'></view>
+<view class='cu-tabbar-height'></view>

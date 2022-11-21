@@ -1,0 +1,4 @@
+/* pages/mine/accesstoken/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}

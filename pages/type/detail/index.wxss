@@ -1,0 +1,17 @@
+/* pages/type/detail/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}
+page{
+  background-color: white;
+}
+
+.iconColor{
+  color: red;
+}
+.custom-image{
+  height: 100rpx;
+}
+.inputClass{
+  background-color: red;
+}

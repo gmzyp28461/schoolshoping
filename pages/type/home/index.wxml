@@ -1,0 +1,35 @@
+<cu-custom bgColor="bg-gradual-pink" >
+  <view slot="content">分类</view>
+</cu-custom>
+
+<van-search value="{{ value }}"  shape="round"
+background="linear-gradient(45deg, #ec008c, #6739b6)"   placeholder="搜索商品"  bind:click-input="search"/>
+
+<view style="display: flex;">
+  <van-sidebar active-key="{{ activeKey }}" >
+      <van-sidebar-item title="{{item.typeName}}" wx:for="{{typeList}}" bind:click="onChange" data-uuid="{{item.typeId}}"/>
+    </van-sidebar>
+    <view class="bg-white" style="width: 100%;">
+
+      <view  wx:if="{{childList.length>0}}" >
+      <van-grid column-num="3">
+        <van-grid-item use-slot bind:click="list"  data-uuid="{{item.typeId}}"  data-title="{{item.typeName}}" wx:for="{{childList}}" wx:if="{{index<10}}">
+          <view class="cu-avatar lg round phone-img" style="background-image:url({{baseUrl}}{{item.coverImg}});"></view>
+          <view style="text-align: center;">{{item.typeName}}</view>
+        </van-grid-item>
+      </van-grid>
+      </view>
+      <view  wx:if="{{childList.length==0}}" >
+              <van-empty 
+              class="custom-image"
+              image="https://img.yzcdn.cn/vant/custom-empty-image.png"
+              description="暂无分类信息" />
+              
+      </view>
+
+
+
+
+    </view>
+</view>
+<view style="height:100rpx"></view>

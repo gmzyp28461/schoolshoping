@@ -1,0 +1,19 @@
+<!--pages/mine/collect/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="content">我的收藏</view>
+</cu-custom>
+
+
+<view  wx:if="{{list.length>0}}" >
+  <van-grid column-num="2"  border="{{ false }}">
+    <van-grid-item use-slot bind:click="detail"  data-uuid="{{item.goodsId}}" wx:for="{{ list }}" >
+      <image style="height: 180px;border-radius:5px;" src="{{baseUrl}}{{item.goods.url}}" />
+    <view  style="margin-top: 10rpx;height:40rpx;">{{item.goods.title}}</view>
+    </van-grid-item>
+</van-grid>
+</view>
+<view  wx:if="{{list.length==0}}" >
+        <van-empty description="暂无收藏信息" />
+</view>
+
+<view class='cu-tabbar-height'></view>

@@ -1,0 +1,8 @@
+{
+  "enablePullDownRefresh":true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "van-dialog": "../../../miniprogram_npm/@vant/weapp/dialog/index",
+    "van-empty": "../../../miniprogram_npm/@vant/weapp/empty/index"
+  }
+}

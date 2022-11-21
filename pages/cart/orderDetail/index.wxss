@@ -1,0 +1,25 @@
+/* pages/orderDetail/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}
+.rowClass{
+  background-color: white !important;
+}
+.rowClass1{
+  background-color: white !important;
+  padding: 5px !important;
+}
+
+.customClass{
+  background-color: white !important;
+  margin-left: 0px;
+  margin-bottom: 10px !important;
+}
+
+.valueClass{
+  width: 60% !important;
+}
+
+.buttonClass{
+  margin-top: 20px !important;
+}

@@ -1,0 +1,7 @@
+/* pages/mine/vip/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}
+.buttonClass{
+  margin-top: 20px !important;
+}

@@ -1,0 +1,21 @@
+<!--pages/component/comment/index.wxml-->
+<view class="cu-list menu-avatar comment solids-top">
+  <view class="cu-item" wx:for="{{list}}" wx:if="{{list.length>0}}"  >
+        <view class="cu-avatar round" style="background-image:url({{item.user.avatar}});"></view>
+        <view class="content">
+          <view class="text-grey">{{item.user.userName}}</view>
+          <view class="padding-sm radius margin-top-sm  text-sm">
+            <view class="flex">
+              <view>{{item.content}}</view>
+            </view>
+          </view>
+          <view class="margin-top-sm flex justify-between">
+            <view class="text-gray text-df">{{item.createTime}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view  wx:if="{{list.length==0}}" >
+        <van-empty description="暂无评论" />
+      </view>
+  </view>

@@ -1,0 +1,4 @@
+/* pages/cart/express/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}

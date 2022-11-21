@@ -1,0 +1,67 @@
+<!--pages/mine/balance/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">佣金</view>
+</cu-custom>
+
+
+<van-dialog id="van-dialog" />
+<van-toast id="van-toast" />
+<view style="text-align: center;padding: 60rpx;background-color: white;">
+  <van-circle value="100" color="{{gradientColor}}" size="150" text="{{price}}" />
+</view>
+<view style="margin-top:50rpx;">
+  <van-cell  title="提现" icon="balance-pay" is-link  bind:click="showPopup"/>
+
+<van-cell  title="提现明细" icon="balance-o" is-link  bind:click="showPopup2"/>
+</view>
+
+
+<van-popup
+  show="{{ show }}"
+  round
+  closeable
+  position="bottom"
+  custom-style="height: 30%"
+  bind:close="onClose"
+>
+
+<view style="padding-top: 50rpx;">
+  <van-field
+    model:value="{{ balance }}"
+    required
+    clearable
+    label="提现金额"
+    placeholder="请输入金额"
+  />
+  <van-field
+    model:value="{{ idcard }}"
+    required
+    clearable
+    label="账号"
+    placeholder="请输入提现账号"
+  />
+  <view style="text-align: center;">
+<van-button plain hairline type="primary"  custom-class="buttonClass" bind:click="subInfo">提交申请</van-button>
+</view>
+</view>
+
+
+
+</van-popup>
+
+<van-popup
+  show="{{ show2 }}"
+  round
+  closeable
+  position="bottom"
+  custom-style="height: 50%"
+  bind:close="onClose2"
+>
+
+<view  style="padding-top: 50rpx;">
+  <van-cell wx:for="{{list}}" title="￥{{item.price}}" value="{{item.status}}"  label="{{item.createTime}}"/>
+</view>
+
+
+</van-popup>

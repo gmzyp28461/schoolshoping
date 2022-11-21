@@ -1,0 +1,21 @@
+<!--pages/type/list/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="content">{{title}}</view>
+</cu-custom>
+
+<view  wx:if="{{list.length>0}}" >
+  <van-grid column-num="2"  border="{{ false }}">
+    <van-grid-item use-slot bind:click="detail"  data-uuid="{{item.uuid}}" wx:for="{{ list }}" >
+      <image style="height: 180px;border-radius:5px;" src="{{baseUrl}}{{item.url}}" />
+    <view  style="margin-top: 10rpx;">{{item.title}}</view>
+    <view  style="margin-top: 10rpx;">￥{{item.price}}</view>
+    </van-grid-item>
+</van-grid>
+</view>
+<view  wx:if="{{list.length==0}}" >
+  <van-empty description="无商品信息 快去商城逛逛吧~">
+    <van-button round type="info" block class="bottom-button" bind:click="goshop">去商城</van-button>
+  </van-empty>
+</view>
+
+<view class='cu-tabbar-height'></view>

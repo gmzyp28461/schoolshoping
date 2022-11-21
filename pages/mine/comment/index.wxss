@@ -1,0 +1,15 @@
+/* pages/mine/comment/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}
+cu-list.menu-avatar>.cu-item .content {
+  position: absolute;
+  left: 146rpx;
+   width: 100% !important; 
+  line-height: 1.6em;
+}
+
+.createtime{
+  font-size: 26rpx;
+  color: blue;
+}

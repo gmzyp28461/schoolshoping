@@ -1,0 +1,17 @@
+<!--pages/mine/accesstoken/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="content">微信授权</view>
+</cu-custom>
+
+
+<view class="flex solid-bottom padding justify-center">
+  <image src="../../../images/logo.png" style="width: 200rpx;height:200rpx;"></image>     
+</view>
+
+  <view class='content padding-xl' >
+			<view><text class="cuIcon-title text-black"></text>申请获取以下权限</view>
+			<text><text class="cuIcon-title text-black"></text>获得你的公开信息(昵称，头像、地区等)</text>
+		</view>
+
+
+    <button class="bg-gradual-pink margin-lg" bindtap="getUserProfile">微信一键登录</button>

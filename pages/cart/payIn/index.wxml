@@ -1,0 +1,14 @@
+<!--pages/cart/payIn/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{false}}">
+</cu-custom>
+<view style="padding-top:60rpx">
+
+  <view style="text-align:center;margin-top:200rpx;font-weight:bolder;font-size:46rpx;color:green">
+    <image src="/images/zhifu.png" style="width:100rpx;height:100rpx"></image></view>
+  <view style="text-align:center;margin-top:20rpx;font-weight:bolder;font-size:46rpx;color:green">
+    支付成功</view>
+  <view style="text-align:center;font-weight:bolder;padding:100rpx;font-size:36rpx">￥：{{fee}}</view>
+  <button style="width:200rpx;margin-top:140rpx;font-size:26rpx;color:green;border:2rpx solid green" bindtap="finished" >完成</button>
+</view>
+
+

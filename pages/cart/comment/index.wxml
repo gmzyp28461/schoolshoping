@@ -1,0 +1,29 @@
+<!--pages/cart/comment/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">评价</view>
+</cu-custom>
+<van-toast id="van-toast" />
+
+<van-cell-group wx:for="{{info.detailList}}">
+  <van-image width="100%" height="350" src="{{baseUrl}}{{img}}" />
+  <van-cell title="{{item.goods.title}}"  />
+  <van-field
+    model:value="{{ item.comment }}"
+    center
+    clearable
+    maxlength='500'
+    show-word-limit
+    icon="records"
+    placeholder="晒出你的评价吧~"
+    custom-style="background-color: #e7ebed;height:100px"
+    bind:change="comment"
+    data-uuid="{{item.goodsId}}"
+  >
+  </van-field>
+</van-cell-group>
+
+
+
+
+<van-button plain hairline type="info" block custom-class="buttonClass" bind:click="send" data-uuid="{{uuid}}">提交评论</van-button>

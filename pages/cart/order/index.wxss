@@ -1,0 +1,20 @@
+/* pages/order/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}
+.rowClass{
+  background-color: white !important;
+}
+.rowClass1{
+  background-color: white !important;
+  padding: 5px !important;
+}
+
+.customClass{
+  background-color: white !important;
+  margin-left: 0px;
+  margin-bottom: 10px !important;
+}
+.btnClass{
+  margin-left: 3px;
+}

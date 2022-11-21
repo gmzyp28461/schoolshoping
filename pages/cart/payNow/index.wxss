@@ -1,0 +1,13 @@
+/* pages/payNow/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}
+.rowClass{
+  background-color: white !important;
+}
+
+.customClass{
+  background-color: white !important;
+  margin-left: 0px;
+  margin-bottom: 10px !important;
+}

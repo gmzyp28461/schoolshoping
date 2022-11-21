@@ -1,0 +1,11 @@
+/* pages/type/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}
+.sidebar{
+  width: 200rpx !important;
+}
+
+.phone-img{
+  background-size: 100% 100%;
+}

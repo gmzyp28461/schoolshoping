@@ -1,0 +1,32 @@
+<!--pages/mine/comment/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="content">我的评论</view>
+</cu-custom>
+
+<van-dialog id="van-dialog" />
+<van-toast id="van-toast" />
+
+<view class="cu-list menu-avatar" wx:if="{{list.length>0}}">
+    <view class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}}" wx:for="{{list}}" wx:key bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}" style="height: 200rpx;">
+      <view class="cu-avatar lg" bindtap="detail"  data-uuid="{{item.goodsId}}" style="background-image:url({{baseUrl}}{{item.goods.url}});"></view>
+      <view class="content" style="width: 80%;">
+        <view class="text-grey text-sm" style="color:black;font-size:32rpx">{{item.goods.title}}</view>
+        <view class="text-gray text-xs" style="font-size:26rpx" >
+          {{item.content}}</view>
+      </view>
+      <view class="createtime" style="width: 20%;">
+        创建时间：{{item.createTime}}
+      </view>
+      
+      <view class="action">
+       
+      </view>
+      <view class="move">
+        <view class="bg-red" bindtap="remove"  data-uuid="{{item.uuid}}">删除</view>
+      </view>
+    </view>
+  </view>
+
+  <view  wx:if="{{list.length==0}}" >
+        <van-empty description="暂无评论" />
+</view>

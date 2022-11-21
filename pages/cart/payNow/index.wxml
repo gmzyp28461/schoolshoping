@@ -1,0 +1,45 @@
+<!--pages/pay/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="backText"></view>
+  <view slot="content">填写订单</view>
+</cu-custom>
+<van-toast id="van-toast" />
+
+
+<van-cell title="{{title}}" icon="location-o" is-link label="{{label}}" bind:click="chooseAddress"/>
+
+
+
+<van-swipe-cell  >
+  <van-cell-group>
+    <van-row custom-class="rowClass">
+      <van-col span="24">
+          <van-card
+              price="{{info.price}}"
+              origin-price="{{info.costPrice}}"
+              title="{{info.title}}"
+              num="{{ info.num }}"
+              custom-class="customClass"
+            >
+
+            <view slot="thumb">
+              <image style="height: 100px;border-radius:5px;" src="{{baseUrl}}{{info.url}}" bindtap="detail"  data-uuid="{{info.uuid}}"/>
+            </view>
+              </van-card>
+      </van-col>
+    </van-row>
+  </van-cell-group>
+  <van-field
+    model:value="{{ vipcode }}"
+    clearable
+    label="折扣码"
+    placeholder="请输入合伙人折扣码"
+  />
+</van-swipe-cell>
+
+
+<van-submit-bar
+  price="{{ info.price*100 }}"
+  button-text="支付"
+  bind:submit="onSubmit"
+/>

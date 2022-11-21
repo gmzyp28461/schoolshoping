@@ -1,0 +1,13 @@
+{
+  "usingComponents": {
+  "van-goods-action": "../../../miniprogram_npm/@vant/weapp/goods-action/index",
+  "van-goods-action-icon": "../../../miniprogram_npm/@vant/weapp/goods-action-icon/index",
+  "van-goods-action-button": "../../../miniprogram_npm/@vant/weapp/goods-action-button/index",
+  "van-icon": "../../../miniprogram_npm/@vant/weapp/icon/index",
+  "van-popup": "../../../miniprogram_npm/@vant/weapp/popup/index",
+  "van-field": "../../../miniprogram_npm/@vant/weapp/field/index",
+  "van-empty": "../../../miniprogram_npm/@vant/weapp/empty/index",
+  "van-button": "../../../miniprogram_npm/@vant/weapp/button/index",
+  "comment": "../../component/comment/index"
+  }
+}

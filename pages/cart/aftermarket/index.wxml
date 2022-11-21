@@ -1,0 +1,13 @@
+<!--pages/cart/aftermarket/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">{{title}}</view>
+</cu-custom>
+<!-- <view style="padding-top:60rpx">
+  123
+  <input value="{{content}}" type="text"/>
+  <button bindtap="send">发送</button>
+</view> -->
+<button style="padding-top:60rpx" open-type="contact">进入客服会话</button>
+
+

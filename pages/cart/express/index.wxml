@@ -1,0 +1,34 @@
+<!--pages/express/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">物流查询</view>
+</cu-custom>
+
+<view class="cu-timeline" wx:if="{{info!=''}}">
+
+
+  <view class="cu-item ">
+    <view class="content ">
+    <view>快递公司：{{info.kuaidiname}}</view>
+    <view>联系电话：{{info.telephone}}</view>
+    <view>更新时间：{{info.updatetime}}</view>
+    </view>
+  </view>
+
+
+    <view class="cu-item" wx:for="{{info.list}}">
+      <view class="content">
+        <view class="cu-capsule radius">
+          <view class="cu-tag line-cyan">{{item.time}}</view>
+        </view>
+        <view class="margin-top">{{item.content}}</view>
+      </view>
+    </view>
+
+
+  </view>
+
+
+<van-empty description="暂无快递信息 快去商城逛逛吧~" wx:if="{{info.length==0}}">
+    <van-button round type="info" block class="bottom-button" bind:click="goshop">去商城</van-button>
+  </van-empty>

@@ -1,0 +1,7 @@
+/* pages/type/search/index.wxss */
+.cu-bar{
+  box-sizing: border-box;
+}
+page{
+  background-color: white;
+}

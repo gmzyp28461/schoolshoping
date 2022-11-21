@@ -1,0 +1,58 @@
+<!--pages/order/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">订单详细</view>
+</cu-custom>
+
+<van-dialog id="van-dialog" />
+<van-toast id="van-toast" />
+
+<van-cell title="{{info.address.userName}} {{info.address.telNumber}}" icon="location-o" label="{{info.address.provinceName}}{{info.address.cityName}}{{info.address.detailInfo}}{{info.address.countyName}}" />
+
+<view wx:if="{{info.detailList.length>0}}" style="margin-top: 10px;">
+<van-swipe-cell wx:for="{{info.detailList}}" >
+  <van-cell-group>
+    <van-row custom-class="rowClass">
+      <van-col span="24">
+          <van-card
+              price="{{item.price}}"
+              title="{{item.goods.title}}"
+              num="{{ item.num }}"
+              custom-class="customClass"
+            >
+
+            <view slot="thumb">
+              <image style="height: 100px;border-radius:5px;" src="{{baseUrl}}{{item.goods.url}}" bindtap="detail"  data-uuid="{{item.goodsId}}"/>
+            </view>
+              </van-card>
+      </van-col>
+    </van-row>
+  </van-cell-group>
+</van-swipe-cell>
+</view>
+
+<van-row custom-class="rowClass1">
+  <van-col offset="14" span="10">
+    <text class="text-xl padding-right-sm text-bold">总价：{{info.payPrice/100}}</text>
+  </van-col>
+</van-row>
+<van-cell title="折扣码" title-width="60px" value="{{info.vipCode}}" wx:if="{{info.vipCode!=null}}"  value-class="valueClass"/>
+
+
+<van-cell title="折扣" value="{{info.discount}}%"  wx:if="{{info.vipCode!=null}}" />
+
+
+<van-cell title="订单编码" title-width="60px" value="{{info.orderCode}}" value-class="valueClass"/>
+
+<van-cell title="创建时间" value="{{info.createTime}}"  />
+
+<van-cell title="支付时间" value="{{info.payTime}}"  />
+
+<van-cell title="发货时间" value="{{info.deliveryDate}}" wx:if="{{info.deliveryDate!=null}}"  />
+
+<van-cell title="收货时间" value="{{info.receivingDate}}"  wx:if="{{info.receivingDate!=null}}" />
+
+<van-button plain hairline type="primary" block custom-class="buttonClass" bind:click="remove" data-uuid="{{info.uuid}}">删除订单</van-button>
+
+
+<view class='cu-tabbar-height'></view>

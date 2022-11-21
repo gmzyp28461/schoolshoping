@@ -1,0 +1,54 @@
+<!--pages/order/index.wxml-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">{{title}}</view>
+</cu-custom>
+<van-dialog id="van-dialog" />
+<van-toast id="van-toast" />
+
+<view wx:if="{{list.length>0}}" wx:for="{{list}}" style="margin-top: {{index==0?0:10}}px;">
+
+    <van-row custom-class="rowClass" wx:for="{{item.detailList}}" wx:for-item="citem">
+      <van-col span="24">
+          <van-card
+              price="{{citem.price}}"
+              title="{{citem.goods.title}}"
+              num="{{ citem.num }}"
+              custom-class="customClass"
+            >
+            <view slot="thumb">
+              <image style="height: 100px;border-radius:5px;" src="{{baseUrl}}{{citem.goods.url}}" bindtap="detail"  data-uuid="{{citem.goodsId}}"/>
+            </view>
+       </van-card>
+      </van-col>
+    </van-row>
+
+  <van-cell >
+    <view slot="">
+    <text class="padding-right-sm">总额:{{item.payPrice/100}}</text>
+    
+    
+
+      <van-button wx:if="{{item.payStatus==40||item.payStatus==50}}" plain hairline round size="small" type="warning" custom-class="btnClass" bind:click="express" data-express="{{item.expressCode}}">物流查询</van-button>
+
+<van-button plain hairline round size="small" type="info" custom-class="btnClass" bind:click="orderDetail" data-uuid="{{item.uuid}}">订单详情</van-button>
+
+<van-button wx:if="{{item.payStatus==40}}" plain hairline round size="small" type="primary" custom-class="btnClass"  bind:click="sure" data-uuid="{{item.uuid}}">确认收货</van-button>
+  
+
+  <van-button wx:if="{{item.payStatus==50&&item.commStatus=='0'}}" plain hairline round size="small" type="warning" custom-class="btnClass" data-list="{{item.detailList}}"  bind:click="comment" data-uuid="{{item.uuid}}">评价</van-button>
+</view>
+</van-cell>
+
+
+
+    
+</view>
+
+<view wx:if="{{list.length==0}}">
+  <van-empty description="还没有订单呢 快去商城逛逛吧~">
+    <van-button round type="info" block class="bottom-button" bind:click="goshop">去商城</van-button>
+  </van-empty>
+</view>
+
+<view class='cu-tabbar-height'></view>
